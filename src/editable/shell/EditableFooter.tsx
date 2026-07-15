@@ -1,57 +1,94 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowUpRight } from 'lucide-react'
 import { SITE_CONFIG } from '@/lib/site-config'
 import { globalContent } from '@/editable/content/global.content'
 import { useEditableLocalAuthSession } from '@/editable/components/EditableLocalAuthForms'
 
 export function EditableFooter() {
-  const taskLinks = SITE_CONFIG.tasks.filter((task) => task.enabled)
   const year = new Date().getFullYear()
   const { session, logout } = useEditableLocalAuthSession()
 
   return (
-    <footer className="border-t border-[var(--editable-border)] bg-[var(--editable-footer-bg)] text-[var(--editable-footer-text)]">
-      <div className="h-[2px] bg-[linear-gradient(90deg,transparent_0%,var(--slot4-accent)_50%,transparent_100%)]" />
-      <div className="mx-auto grid max-w-[var(--editable-container)] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
+    <footer className="bg-[var(--editable-footer-bg)] text-[var(--editable-footer-text)]">
+
+      {/* Main grid */}
+      <div className="mx-auto grid max-w-[var(--editable-container)] gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.6fr_1fr_1fr_1.4fr] lg:px-8">
+
+        {/* Brand column */}
         <div>
-          <Link href="/" className="inline-flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center border border-[var(--slot4-accent)]/40 bg-[var(--slot4-surface-bg)]">
-              <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-8 w-8 object-contain" />
+          <Link href="/" className="inline-flex items-center gap-2.5">
+            <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-10 w-10 shrink-0 rounded-full object-cover" />
+            <span className="editable-display text-base font-bold tracking-tight text-white">
+              {SITE_CONFIG.name}
             </span>
-            <span className="editable-display text-xl font-semibold tracking-[0.01em]">{SITE_CONFIG.name}</span>
           </Link>
-          <p className="mt-4 max-w-md text-sm leading-7 text-[var(--slot4-muted-text)]">{globalContent.footer?.description || SITE_CONFIG.description}</p>
+          <p className="mt-5 max-w-xs text-sm leading-7 text-white/55">
+            {globalContent.footer?.description || 'Find deals, post classifieds, and discover profiles — your local marketplace for buyers and sellers.'}
+          </p>
         </div>
 
+        {/* Resources column */}
         <div>
-          <h3 className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--slot4-accent)]">Explore</h3>
-          <div className="mt-4 grid gap-2">
-            {taskLinks.map((task) => (
-              <Link key={task.key} href={task.route} className="inline-flex items-center gap-2 text-sm font-medium text-[var(--slot4-muted-text)] transition hover:text-[var(--slot4-page-text)]">
-                {task.label} <ArrowUpRight className="h-3.5 w-3.5" />
+          <h4 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">Resources</h4>
+          <div className="mt-5 grid gap-3">
+            {[
+              ['About', '/about'],
+              ['Contact', '/contact'],
+              ['Search', '/search'],
+              ['FAQ', '/contact'],
+              ['Privacy Policy', '/about'],
+            ].map(([label, href]) => (
+              <Link key={href + label} href={href} className="text-sm font-medium text-white/65 transition duration-200 hover:text-white">
+                {label}
               </Link>
             ))}
           </div>
         </div>
 
+        {/* Account column */}
         <div>
-          <h3 className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--slot4-accent)]">Site</h3>
-          <div className="mt-4 grid gap-2">
-            {[
-              ['About', '/about'],
-              ['Contact', '/contact'],
-              ...(session ? [['Create', '/create']] : [['Login', '/login'], ['Sign up', '/signup']]),
-            ].map(([label, href]) => (
-              <Link key={href} href={href} className="text-sm font-medium text-[var(--slot4-muted-text)] transition hover:text-[var(--slot4-page-text)]">{label}</Link>
-            ))}
-            {session ? <button type="button" onClick={logout} className="text-left text-sm font-medium text-[var(--slot4-muted-text)] transition hover:text-[var(--slot4-page-text)]">Logout</button> : null}
+          <h4 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">Account</h4>
+          <div className="mt-5 grid gap-3">
+            {session ? (
+              <button type="button" onClick={logout} className="text-left text-sm font-medium text-white/65 transition duration-200 hover:text-white">Log out</button>
+            ) : (
+              <>
+                <Link href="/login" className="text-sm font-medium text-white/65 transition duration-200 hover:text-white">Sign In</Link>
+                <Link href="/contact" className="text-sm font-medium text-white/65 transition duration-200 hover:text-white">Support</Link>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Stay in touch column */}
+        <div>
+          <h4 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40">Stay In Touch</h4>
+          <p className="mt-5 text-sm leading-6 text-white/55">
+            Subscribe for exclusive deals and new listings!
+          </p>
+          <div className="mt-5 space-y-3">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full rounded-full border border-white/15 bg-white/8 px-4 py-3 text-sm text-white outline-none placeholder:text-white/35 transition duration-200 focus:border-[var(--slot4-accent-fill)]"
+            />
+            <button
+              type="button"
+              className="w-full rounded-full bg-[var(--slot4-accent-fill)] px-4 py-3 text-sm font-semibold text-[var(--slot4-on-accent)] transition duration-200 hover:opacity-90 hover:-translate-y-0.5"
+            >
+              Subscribe Now
+            </button>
           </div>
         </div>
       </div>
-      <div className="border-t border-[var(--editable-border)] px-4 py-5 text-center text-xs font-medium tracking-[0.12em] text-[var(--slot4-muted-text)]">
-        © {year} {SITE_CONFIG.name}. All rights reserved.
+
+      {/* Bottom bar */}
+      <div className="border-t border-white/8">
+        <div className="mx-auto flex max-w-[var(--editable-container)] flex-col items-center justify-between gap-3 px-4 py-5 text-xs text-white/40 sm:flex-row sm:px-6 lg:px-8">
+          <span>© {year} {SITE_CONFIG.name} — All Rights Reserved.</span>
+          <span>{globalContent.footer?.bottomNote || 'Your local marketplace for buyers and sellers.'}</span>
+        </div>
       </div>
     </footer>
   )
